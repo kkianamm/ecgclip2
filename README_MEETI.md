@@ -60,6 +60,16 @@ python prepare_meeti.py --meeti-dir ./MEETI               # full
 This writes `./work_meeti/labels.csv` and fills `./work_meeti/images/`. It also
 prints the per-class positive counts and how many reports matched no superclass.
 
+**MEETI ships images for only ~10,000 of its 784,680 records.** The rest are
+text/feature-only. Because every script here is image-based, `prepare_meeti.py`
+**drops imageless records by default**, so `labels.csv` ends up with the ~10k
+imaged subset — exactly what you want for vision work. Two escape hatches:
+`--render-from-wfdb` renders more images from MIMIC-IV-ECG waveforms if you have
+them; `--keep-unimaged` keeps every row (but then you must filter to
+`has_image == 1` yourself before evaluating, or the loaders will crash on a
+missing PNG). If you already built a full-size `labels.csv`, run
+`python filter_imaged.py` to trim it in place without re-scanning.
+
 Useful flags:
 
 - `--label-mode none` — skip weak-labeling entirely (class columns all zero).
